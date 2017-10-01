@@ -19,14 +19,15 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
-
-
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     var photos: List<Photo>? = null
     val retriever = PhotoRetriever()
+    val photoCategory = arrayOf("fashion", "nature", "backgrounds", "science", "education", "people",
+            "feelings", "health", "places", "animals", "industry", "food", "computer",
+            "sports", "transportation", "travel", "buildings", "business", "music")
 
     var mainAdapter: MainAdapter? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -43,11 +44,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             override fun onFailure(call: Call<PhotoList>?, t: Throwable?) {
+                failedTextView.visibility = View.VISIBLE
                 Log.e("MainActivity", "Problem calling API", t)
             }
 
         }
-        retriever.getNaturePhotos(callback)
+        retriever.getPhotoByCategory(photoCategory[1], callback)
 
         val accountHeader = AccountHeaderBuilder()
                 .withActivity(this)
@@ -61,23 +63,39 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 .withToolbar(toolbar)
                 .build()
 
-        drawer.addItems(PrimaryDrawerItem().withName("Nature").withIdentifier(1),
-                PrimaryDrawerItem().withName("Backgrounds").withIdentifier(2),
-                PrimaryDrawerItem().withName("Science").withIdentifier(3))
+        drawer.addItems(PrimaryDrawerItem().withName(photoCategory[0].capitalize()).withIdentifier(0),
+                PrimaryDrawerItem().withName(photoCategory[1].capitalize()).withIdentifier(1),
+                PrimaryDrawerItem().withName(photoCategory[2].capitalize()).withIdentifier(2),
+                PrimaryDrawerItem().withName(photoCategory[3].capitalize()).withIdentifier(3),
+                PrimaryDrawerItem().withName(photoCategory[4].capitalize()).withIdentifier(4),
+                PrimaryDrawerItem().withName(photoCategory[5].capitalize()).withIdentifier(5),
+                PrimaryDrawerItem().withName(photoCategory[6].capitalize()).withIdentifier(6),
+                PrimaryDrawerItem().withName(photoCategory[7].capitalize()).withIdentifier(7),
+                PrimaryDrawerItem().withName(photoCategory[8].capitalize()).withIdentifier(8),
+                PrimaryDrawerItem().withName(photoCategory[9].capitalize()).withIdentifier(9),
+                PrimaryDrawerItem().withName(photoCategory[10].capitalize()).withIdentifier(10),
+                PrimaryDrawerItem().withName(photoCategory[11].capitalize()).withIdentifier(11),
+                PrimaryDrawerItem().withName(photoCategory[12].capitalize()).withIdentifier(12),
+                PrimaryDrawerItem().withName(photoCategory[13].capitalize()).withIdentifier(13),
+                PrimaryDrawerItem().withName(photoCategory[14].capitalize()).withIdentifier(14),
+                PrimaryDrawerItem().withName(photoCategory[15].capitalize()).withIdentifier(15),
+                PrimaryDrawerItem().withName(photoCategory[16].capitalize()).withIdentifier(16),
+                PrimaryDrawerItem().withName(photoCategory[17].capitalize()).withIdentifier(17),
+                PrimaryDrawerItem().withName(photoCategory[18].capitalize()).withIdentifier(18)
+        )
 
         drawer.setOnDrawerItemClickListener { view, position, drawerItem ->
-            when (position){
-                1 -> retriever.getNaturePhotos(callback)
-                2 -> retriever.getBackgroundsPhotos(callback)
-                3 -> retriever.getSciencePhotos(callback)
+            retriever.getPhotoByCategory(photoCategory[position-1], callback)
+
+            if(supportActionBar != null){
+                supportActionBar?.title = photoCategory[position-1].capitalize()
             }
+
             drawer.closeDrawer()
             true
         }
 
-
         recyclerView.layoutManager = LinearLayoutManager(this)
-
 
     }
 
